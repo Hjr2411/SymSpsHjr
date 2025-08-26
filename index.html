@@ -29,7 +29,7 @@
           </label>
           <button class="btn primary w-full" type="submit">Entrar</button>
           <div id="loginError" class="muted mt-8"></div>
-          <div class="muted mt-8">Ex.: nome (Maria)/ Usuario (939893140</div>
+          <div class="muted mt-8">Ex.: nome (Maria)/ Usuario (939893140)</div>
         </form>
       </section>
     </main>
@@ -44,7 +44,19 @@
   <script src="js/auth.js"></script>
   <script>
     // Inicialização específica da página de login
-    document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('loginForm').addEventListener('submit', handleLogin);
+      
+      // Verificar se já está logado e redirecionar
+      const session = getSession();
+      if (session) {
+        if (session.admin) {
+          window.location.href = 'admin.html';
+        } else {
+          window.location.href = 'user.html';
+        }
+      }
+    });
   </script>
 </body>
 </html>
