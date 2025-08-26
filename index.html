@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Login</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+</head>
+<body>
+  <h2>Entrar</h2>
+  <form id="loginForm">
+    <input id="username" type="text" placeholder="Usuário"/>
+    <input id="password" type="password" placeholder="Senha"/>
+    <button type="submit">Login</button>
+    <div id="loginError"></div>
+  </form>
+  <div id="toast"></div>
+  <script src="js/firebase-init.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
