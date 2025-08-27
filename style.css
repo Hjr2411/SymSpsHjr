@@ -369,11 +369,19 @@ canvas{
     }
 
     .dica-balao {
-      display: none;
-      position: absolute;
-      top: 30px;
-      left: 0;
-      background-color: #f0f0f0;
+       background:#1c2230;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:all .2s ease;
+  font-weight:500;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:36px;
       color: #333;
       padding: 10px;
       border-radius: 6px;
