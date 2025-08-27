@@ -29,7 +29,31 @@
           </label>
           <button class="btn primary w-full" type="submit">Entrar</button>
           <div id="loginError" class="muted mt-8"></div>
-          <div class="muted mt-8">Ex.: nome (Maria)/ Usuario (939893140)</div>
+          <!--<div class="muted mt-8">Ex.: nome (seu primeiro nome)/ Usuario (94...)</div>-->
+          <!------------------------------------------------------------->
+<div class="dica-container" onclick="mostrarDica()">
+  <!-- Texto clicável -->
+  Como logar!
+  <!-- Balão de dica -->
+  <div class="dica-balao" id="dicaTexto">
+    Digite seu nome
+  </div>
+</div>
+
+<script>
+  function mostrarDica() {
+    const dica = document.getElementById("dicaTexto");
+    dica.style.display = dica.style.display === "block" ? "none" : "block";
+  }
+</script>
+
+
+
+
+
+          
+          <!------------------------------------------------------------->
+
         </form>
       </section>
     </main>
