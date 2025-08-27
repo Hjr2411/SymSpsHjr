@@ -359,3 +359,26 @@ canvas{
   background:var(--muted);
 }
 
+/* dicas */
+.dica-container {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    .dica-balao {
+      display: none;
+      position: absolute;
+      top: 30px;
+      left: 0;
+      background-color: #f0f0f0;
+      color: #333;
+      padding: 10px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      width: 200px;
+      z-index: 10;
+
+
