@@ -369,7 +369,7 @@ canvas{
     }
 
     .dica-balao {
-       background:#1c2230;
+       background: #ffffff;
   border:1px solid var(--border);
   color:var(--text);
   padding:8px 12px;
