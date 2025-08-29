@@ -1,7 +1,10 @@
 // admin.js
 document.addEventListener("DOMContentLoaded", () => {
   const user = checkAuth("admin");
-  if (!user) return;
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
 
   // Mostra nome do admin
   const userNameEl = document.getElementById("userName");
