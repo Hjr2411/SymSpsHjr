@@ -4,50 +4,31 @@
   <meta charset="utf-8">
   <title>Admin - SPS_CH</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
   <script src="firebase-config.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="title">Painel Admin</div>
-    <div class="session">
-      <span id="userBadge" class="badge"></span>
-      <button onclick="logout()" class="btn ghost">Sair</button>
-    </div>
-  </header>
-
-  <main class="content">
-    <div class="tabs">
-      <button class="tab active" data-tab="users">Usuários</button>
-      <button class="tab" data-tab="cenarios">Cenários</button>
-      <button class="tab" data-tab="chamados">Chamados</button>
+  <div class="app">
+    <div class="topbar">
+      <div class="title">Painel Admin</div>
+      <div class="session">
+        <span id="userName" class="badge"></span>
+        <button onclick="logout()" class="btn ghost">Sair</button>
+      </div>
     </div>
 
-    <div id="tabUsers" class="tab-panel">
-      <h2>Gerenciar Usuários</h2>
-      <input id="aUNome" class="input" placeholder="Nome">
-      <input id="aUSenha" class="input" type="password" placeholder="Senha">
-      <label><input type="checkbox" id="aUAdmin"> Admin</label>
-      <button id="btnUserCreate" class="btn primary">Criar</button>
-      <table class="table"><thead><tr><th>Nome</th><th>Admin</th><th>Ações</th></tr></thead><tbody id="admUsersTable"></tbody></table>
+    <div class="sidebar">
+      <button id="btnUsers" class="nav-btn">Gerenciar Usuários</button>
+      <button id="btnChamados" class="nav-btn">Gerenciar Chamados</button>
+      <button id="btnDashboard" class="nav-btn">Dashboard</button>
     </div>
 
-    <div id="tabCenarios" class="tab-panel" hidden>
-      <h2>Gerenciar Cenários</h2>
-      <input id="aCenarioNome" class="input" placeholder="Cenário">
-      <button id="btnCenarioCreate" class="btn primary">Criar</button>
-      <table class="table"><thead><tr><th>Nome</th><th>Ações</th></tr></thead><tbody id="admCenariosTable"></tbody></table>
+    <div class="content" id="adminContent">
+      <p>Selecione uma opção no menu.</p>
     </div>
+  </div>
 
-    <div id="tabChamados" class="tab-panel" hidden>
-      <h2>Chamados</h2>
-      <table class="table"><thead><tr><th>Data</th><th>Analista</th><th>Chamado</th><th>Linha</th><th>Ações</th></tr></thead><tbody id="admCallsTable"></tbody></table>
-    </div>
-  </main>
-
-  <div id="toast" class="toast"></div>
   <script src="js/utils.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/admin.js"></script>
