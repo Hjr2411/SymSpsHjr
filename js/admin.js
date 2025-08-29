@@ -1,80 +1,135 @@
+// admin.js
 document.addEventListener("DOMContentLoaded", () => {
   const user = checkAuth("admin");
   if (!user) return;
 
-  document.getElementById("userName").textContent = user.nome;
+  // Mostra nome do admin
+  const userNameEl = document.getElementById("userName");
+  if (userNameEl) userNameEl.textContent = user.nome;
 
-  // Botões do menu lateral
-  document.getElementById("btnUsers").addEventListener("click", () => {
-    document.getElementById("adminContent").innerHTML = "<h2>Gerenciar Usuários</h2><p>Aqui entra o CRUD de usuários...</p>";
+  const content = document.getElementById("adminContent");
+
+  // ---- MENU: Usuários ----
+  document.getElementById("btnUsers")?.addEventListener("click", async () => {
+    content.innerHTML = `
+      <h2>Gerenciar Usuários</h2>
+      <div class="card">
+        <form id="formUser">
+          <label class="field">
+            <span>Usuário</span>
+            <input id="newUser" class="input" type="text" required>
+          </label>
+          <label class="field">
+            <span>Senha</span>
+            <input id="newPass" class="input" type="password" required>
+          </label>
+          <label class="field">
+            <span>Admin?</span>
+            <select id="newAdmin" class="select">
+              <option value="false">Não</option>
+              <option value="true">Sim</option>
+            </select>
+          </label>
+          <button type="submit" class="btn primary">Adicionar</button>
+        </form>
+      </div>
+      <div class="table-wrap" style="margin-top:16px">
+        <table class="table" id="usersTable">
+          <thead><tr><th>Usuário</th><th>Admin</th><th>Ações</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    `;
+
+    // Evento de adicionar usuário
+    document.getElementById("formUser").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const u = document.getElementById("newUser").value.trim().toLowerCase();
+      const p = document.getElementById("newPass").value.trim();
+      const a = document.getElementById("newAdmin").value === "true";
+      if (!u || !p) return toast("Preencha os campos");
+
+      await db.ref("app/users/" + u).set({ nome: u, password: p, admin: a });
+      toast("Usuário adicionado!");
+      document.getElementById("formUser").reset();
+      loadUsers();
+    });
+
+    // Carregar tabela de usuários
+    async function loadUsers() {
+      const snap = await db.ref("app/users").once("value");
+      const tbody = document.querySelector("#usersTable tbody");
+      tbody.innerHTML = "";
+      snap.forEach(child => {
+        const u = child.val();
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${esc(u.nome)}</td>
+          <td>${u.admin ? "Sim" : "Não"}</td>
+          <td>
+            <button class="btn" data-del="${child.key}">Excluir</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Botões de excluir
+      document.querySelectorAll("[data-del]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.getAttribute("data-del");
+          await db.ref("app/users/" + id).remove();
+          toast("Usuário removido!");
+          loadUsers();
+        });
+      });
+    }
+    loadUsers();
   });
 
-  document.getElementById("btnChamados").addEventListener("click", () => {
-    document.getElementById("adminContent").innerHTML = "<h2>Gerenciar Chamados</h2><p>Aqui entra o CRUD de chamados...</p>";
+  // ---- MENU: Chamados ----
+  document.getElementById("btnChamados")?.addEventListener("click", async () => {
+    content.innerHTML = `
+      <h2>Gerenciar Chamados</h2>
+      <div class="table-wrap">
+        <table class="table" id="callsTable">
+          <thead><tr><th>ID</th><th>Título</th><th>Status</th><th>Ações</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    `;
+
+    async function loadCalls() {
+      const snap = await db.ref("app/chamados").once("value");
+      const tbody = document.querySelector("#callsTable tbody");
+      tbody.innerHTML = "";
+      snap.forEach(child => {
+        const c = child.val();
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${child.key}</td>
+          <td>${esc(c.titulo || "-")}</td>
+          <td>${esc(c.status || "aberto")}</td>
+          <td>
+            <button class="btn" data-del-call="${child.key}">Excluir</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.querySelectorAll("[data-del-call]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.getAttribute("data-del-call");
+          await db.ref("app/chamados/" + id).remove();
+          toast("Chamado removido!");
+          loadCalls();
+        });
+      });
+    }
+    loadCalls();
   });
 
-  document.getElementById("btnDashboard").addEventListener("click", () => {
+  // ---- MENU: Dashboard ----
+  document.getElementById("btnDashboard")?.addEventListener("click", () => {
     window.location.href = "dashboard.html";
   });
 });
-
-// admin.js — gestão usuários, cenários e chamados
-const s = getSession();
-if(!s || !s.admin) window.location.href="login.html";
-document.getElementById("userBadge").textContent = s.nome+" (admin)";
-
-const admUsersTable = document.getElementById("admUsersTable");
-const admCenariosTable = document.getElementById("admCenariosTable");
-const admCallsTable = document.getElementById("admCallsTable");
-
-document.getElementById("btnUserCreate").onclick = async ()=>{
-  const nome = aUNome.value.trim(); const senha = aUSenha.value; const admin = aUAdmin.checked;
-  if(!nome||!senha) return toast("Preencha todos os campos");
-  await db.ref("app/users/"+nome.toLowerCase()).set({nome,password:senha,admin,ativo:true});
-  toast("Usuário criado"); loadUsers();
-};
-
-async function loadUsers(){
-  const snap = await db.ref("app/users").once("value");
-  admUsersTable.innerHTML="";
-  Object.entries(snap.val()||{}).forEach(([id,u])=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${u.nome}</td><td>${u.admin?"✔":""}</td><td><button onclick="deleteUser('${id}')">Del</button></td>`;
-    admUsersTable.appendChild(tr);
-  });
-}
-async function deleteUser(id){ await db.ref("app/users/"+id).remove(); toast("Usuário removido"); loadUsers(); }
-
-async function loadCenarios(){
-  const snap = await db.ref("app/listas/cenarios").once("value");
-  admCenariosTable.innerHTML="";
-  (snap.val()||[]).forEach((c,i)=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${c}</td><td><button onclick="deleteCenario(${i})">Del</button></td>`;
-    admCenariosTable.appendChild(tr);
-  });
-}
-btnCenarioCreate.onclick=async()=>{
-  const nome=aCenarioNome.value.trim(); if(!nome) return;
-  const snap=await db.ref("app/listas/cenarios").once("value");
-  const cen=snap.val()||[]; cen.push(nome); await db.ref("app/listas/cenarios").set(cen);
-  toast("Cenário criado"); loadCenarios();
-};
-async function deleteCenario(i){
-  const snap=await db.ref("app/listas/cenarios").once("value");
-  const cen=snap.val()||[]; cen.splice(i,1); await db.ref("app/listas/cenarios").set(cen);
-  toast("Cenário removido"); loadCenarios();
-}
-
-async function loadChamados(){
-  const snap = await db.ref("app/chamados").once("value");
-  admCallsTable.innerHTML="";
-  Object.entries(snap.val()||{}).forEach(([id,r])=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${r.dataEncaminhamento}</td><td>${r.analista}</td><td>${r.chamado}</td><td>${r.linha}</td><td><button onclick="delChamado('${id}')">Del</button></td>`;
-    admCallsTable.appendChild(tr);
-  });
-}
-async function delChamado(id){ await db.ref("app/chamados/"+id).remove(); toast("Chamado removido"); loadChamados(); }
-
-loadUsers(); loadCenarios(); loadChamados();
