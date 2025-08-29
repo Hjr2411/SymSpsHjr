@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Login - SPS_CH</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+</head>
+<body>
+  <div class="card w-420">
+    <h2>Entrar</h2>
+    <form id="loginForm">
+      <label class="field">
+        <span>Usuário</span>
+        <input id="username" type="text">
+      </label>
+      <label class="field">
+        <span>Senha</span>
+        <input id="password" type="password">
+      </label>
+      <button type="submit" class="btn primary w-full">Entrar</button>
+      <p id="loginError" class="error-text"></p>
+    </form>
+  </div>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
